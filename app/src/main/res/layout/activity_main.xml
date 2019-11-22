@@ -41,7 +41,7 @@
         android:layout_marginTop="436dp"
         android:background="#536DFE"
         android:onClick="buttonClick"
-        android:text="@string/meeting"
+        android:text="@string/sleep"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

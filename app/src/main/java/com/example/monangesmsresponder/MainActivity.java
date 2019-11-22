@@ -52,28 +52,28 @@ public class MainActivity extends AppCompatActivity {
     public void buttonClick(View view) {
         switch (view.getId()) {
             case R.id.button_miam:
-                sendSMS("0672316256", "Je suis en train de manger mon ange");
+                sendSMS("0672316256", "Je suis en train de manger mon ange.");
                 Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
-                sendSMS("0672316256", "Je suis en train de travailler mon ange");
+                sendSMS("0672316256", "Je suis en train de travailler mon ange.");
                 Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_shopping:
-                sendSMS("0672316256", "Je suis en train de faire les courses mon ange");
+                sendSMS("0672316256", "Je suis en train de faire les courses mon ange.");
                 Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_guitar:
-                sendSMS("0672316256", "Je suis en train faire de la guitare mon ange");
+                sendSMS("0672316256", "Je suis en train de faire de la guitare mon ange.");
                 Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
-                sendSMS("0672316256", "Je suis en train de faire du workout mon ange");
+                sendSMS("0672316256", "Je suis en train de faire du workout mon ange.");
                 Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_meeting:
-                sendSMS("0672316256", "Je suis en train d'assister à une conférence mon ange");
-                Toast.makeText(this, "Button meeting Clicked", Toast.LENGTH_SHORT).show();
+                sendSMS("0672316256", "Je suis en train de dormir mon ange.");
+                Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
