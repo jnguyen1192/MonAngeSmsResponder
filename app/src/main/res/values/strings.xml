@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MonAngeSmsResponder</string>
+    <string name="title_main_activity">Mon ange que j\'aime</string>
+    <string name="guitar">Guitar</string>
+    <string name="work">Work</string>
+    <string name="workout">Workout</string>
+    <string name="miam">Miam</string>
+    <string name="meeting">Meeting</string>
+    <string name="shopping">Shopping</string>
 </resources>
