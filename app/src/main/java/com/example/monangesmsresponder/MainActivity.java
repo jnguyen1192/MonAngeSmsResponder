@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,17 +21,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        requestSmsPermission();
+        checkForSmsPermission();
     }
 
+// https://google-developer-training.github.io/android-developer-phone-sms-course/Lesson%202/2_p_sending_sms_messages.html
+    private void enableSmsButton() {
+        //ImageButton smsButton = (ImageButton) findViewById(R.id.message_icon);
+        //smsButton.setVisibility(View.VISIBLE);
+    }
 
-    private void requestSmsPermission() {
-        String permission = Manifest.permission.RECEIVE_SMS;
-        int grant = ContextCompat.checkSelfPermission(this, permission);
-        if (grant != PackageManager.PERMISSION_GRANTED) {
-            String[] permission_list = new String[1];
-            permission_list[0] = permission;
-            ActivityCompat.requestPermissions(this, permission_list, 1);
+    private void checkForSmsPermission() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS) !=
+                PackageManager.PERMISSION_GRANTED) {
+            //Log.d(TAG, getString(R.string.permission_not_granted));
+            // Permission not yet granted. Use requestPermissions().
+            // MY_PERMISSIONS_REQUEST_SEND_SMS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+        } else {
+            // Permission already granted. Enable the SMS button.
+            enableSmsButton();
         }
     }
 
@@ -37,21 +52,27 @@ public class MainActivity extends AppCompatActivity {
     public void buttonClick(View view) {
         switch (view.getId()) {
             case R.id.button_miam:
+                sendSMS("0672316256", "Je suis en train de manger mon ange");
                 Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
+                sendSMS("0672316256", "Je suis en train de travailler mon ange");
                 Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_shopping:
+                sendSMS("0672316256", "Je suis en train de faire les courses mon ange");
                 Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_guitar:
+                sendSMS("0672316256", "Je suis en train faire de la guitare mon ange");
                 Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
+                sendSMS("0672316256", "Je suis en train de faire du workout mon ange");
                 Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_meeting:
+                sendSMS("0672316256", "Je suis en train d'assister à une conférence mon ange");
                 Toast.makeText(this, "Button meeting Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }

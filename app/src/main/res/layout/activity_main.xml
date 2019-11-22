@@ -27,6 +27,7 @@
         android:layout_marginLeft="196dp"
         android:layout_marginTop="124dp"
         android:background="#E64A19"
+        android:onClick="buttonClick"
         android:text="@string/guitar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,6 +40,7 @@
         android:layout_marginLeft="188dp"
         android:layout_marginTop="436dp"
         android:background="#536DFE"
+        android:onClick="buttonClick"
         android:text="@string/meeting"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -51,6 +53,7 @@
         android:layout_marginLeft="44dp"
         android:layout_marginTop="280dp"
         android:background="#80D8FF"
+        android:onClick="buttonClick"
         android:text="@string/work"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,6 +66,7 @@
         android:layout_marginLeft="44dp"
         android:layout_marginTop="436dp"
         android:background="#FFFF00"
+        android:onClick="buttonClick"
         android:text="@string/shopping"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +81,8 @@
         android:background="#8BC34A"
         android:text="@string/miam"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="buttonClick" />
 
     <Button
         android:id="@+id/button_workout"
@@ -87,6 +92,7 @@
         android:layout_marginLeft="196dp"
         android:layout_marginTop="280dp"
         android:background="#FF4081"
+        android:onClick="buttonClick"
         android:text="@string/workout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
