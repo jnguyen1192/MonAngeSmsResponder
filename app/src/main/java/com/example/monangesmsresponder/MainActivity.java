@@ -42,15 +42,17 @@ public class MainActivity extends AppCompatActivity {
 
         checkForSmsPermission();
 
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void updateTextUsingLastSms() {
+        // TODO le texte doit être mis à jour lors de l'appui d'un bouton
+        //List<String> smsMonAnge = readSMS(context);
 
-        //MyReceiver receiver = new MyReceiver(this);
-
-        //IntentFilter filter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
-        //registerReceiver(receiver, filter);
-
-
-
+        //final TextView textViewToChange = findViewById(R.id.my_text);
+        //textViewToChange.setText(
+        //        smsMonAnge.get(smsMonAnge.size() - 1));
+        //Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
     }
 
 // https://google-developer-training.github.io/android-developer-phone-sms-course/Lesson%202/2_p_sending_sms_messages.html
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         //smsButton.setVisibility(View.VISIBLE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void checkForSmsPermission() {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS) !=
@@ -76,42 +79,58 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Permission already granted. Enable the SMS button.
             enableSmsButton();
+            updateTextUsingLastSms();
         }
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void buttonClick(View view) {
         switch (view.getId()) {
             case R.id.button_miam:
-                sendSMS("0672316256", "Je suis en train de manger mon ange.");
+                updateTextUsingLastSms();
+                // TODO update daemon
+                // TODO Option 1 the daemon will check if the text change after receiving a new sms
+                // TODO Option 2 the daemon will check if the text change is different from the last sms every minutes
+                // TODO Then it will launch the correct sms using the current_state
+                //sendSMS("0672316256", "Je suis en train de manger mon ange.");
                 //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
-                sendSMS("0672316256", "Je suis en train de travailler mon ange.");
+                updateTextUsingLastSms();
+                // TODO update daemon
+                //sendSMS("0672316256", "Je suis en train de travailler mon ange.");
                 //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_shopping:
-                sendSMS("0672316256", "Je suis en train de faire les courses mon ange.");
+                updateTextUsingLastSms();
+                // TODO update daemon
+                //sendSMS("0672316256", "Je suis en train de faire les courses mon ange.");
                 //Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_guitar:
-                sendSMS("0672316256", "Je suis en train de faire de la guitare mon ange.");
+                updateTextUsingLastSms();
+                // TODO update daemon
+                //sendSMS("0672316256", "Je suis en train de faire de la guitare mon ange.");
                 //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
-                sendSMS("0672316256", "Je suis en train de faire du workout mon ange.");
+                updateTextUsingLastSms();
+                // TODO update daemon
+                //sendSMS("0672316256", "Je suis en train de faire du workout mon ange.");
                 //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_meeting:
-                sendSMS("0672316256", "Je suis en train de dormir mon ange.");
+                //updateTextUsingLastSms();
+                // TODO update daemon
+                //sendSMS("0672316256", "Je suis en train de dormir mon ange.");
                 //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void readSMS(Context context) {
-
+    public List<String> readSMS(Context context) {
         List<String> smsMonAnge = new ArrayList<String>();
         ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
@@ -155,14 +174,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
         }
-
+        /*
         for (String sms : smsMonAnge) {
             Log.d("readSMS", sms);
-        }
-        final TextView textViewToChange = (TextView) findViewById(R.id.my_text);
-        textViewToChange.setText(
-                smsMonAnge.get(smsMonAnge.size() - 1));
-        Toast.makeText(this, smsMonAnge.get(0), Toast.LENGTH_SHORT).show();
+        }*/
+
+        return smsMonAnge;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -177,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             ex.printStackTrace();
         }
-        readSMS(this.getApplicationContext());
+        //readSMS(this.getApplicationContext());
         //readSMS();
     }
 }
