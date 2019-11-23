@@ -1,46 +1,149 @@
 package com.example.monangesmsresponder;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Build;
 import android.provider.Telephony;
-import android.telephony.SmsMessage;
-import android.util.Log;
-import android.widget.TextView;
+import android.telephony.SmsManager;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MyReceiver extends BroadcastReceiver {
-    private MainActivity act;
-    public MyReceiver(MainActivity act) {
-        this.act = act;
+    private int state;
+    private Context context;
+
+    public MyReceiver(int state) {
+        this.state = state;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.context = context;
+
         assert(intent.getAction().equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
 
         // Read the last sms received
-        List<Sms> allSms = act.readAllSMS(context);
+        List<Sms> allSms = readAllSMS(context);
         Sms lastSms = allSms.get(allSms.size() - 1);
 
         String num = "+33646729562";
-
-        // TODO comment num to prod
-        num = "+33672316256";
+        // TODO uncomment num to dev
+        //num = "+33672316256";
         // Check if it is a new sms from MonAnge
-        if (lastSms.getNumber().equals(num) && act.state != -1) {
-            Toast.makeText(act, "Reply sms", Toast.LENGTH_SHORT).show();
+        if (lastSms.getNumber().equals(num) && state != -1) {
+            Toast.makeText(context, "Reply sms", Toast.LENGTH_SHORT).show();
             // respond using the good state from act
-            act.sendSMSUsingState(act.state);
+            sendSMSUsingState(state);
         }
         else {
-            Toast.makeText(act, "Sms received from someone else", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Sms received from someone else " + state, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public List<Sms> readAllSMS(Context context) {
+        // create a sms list
+        List<Sms> allSMS = new ArrayList<>();
+        ContentResolver cr = context.getContentResolver();
+        Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
+        int totalSMS;
+        if (c != null) {
+            totalSMS = c.getCount();
+            if (c.moveToFirst()) {
+                for (int j = 0; j < totalSMS; j++) {
+                    String smsDate = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE));
+                    String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
+                    String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
+                    Date date= new Date(Long.valueOf(smsDate));
+                    @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+                    String strDate = dateFormat.format(date);
+
+                    String type;
+                    switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {
+                        case Telephony.Sms.MESSAGE_TYPE_INBOX:
+                            type = "inbox";
+                            allSMS.add(new Sms(number, strDate, body));
+                            java.util.Collections.sort(allSMS, new smsComparator());
+                            break;
+                        case Telephony.Sms.MESSAGE_TYPE_SENT:
+                            type = "sent";
+                            break;
+                        case Telephony.Sms.MESSAGE_TYPE_OUTBOX:
+                            type = "outbox";
+                            break;
+                        default:
+                            break;
+                    }
+                    c.moveToNext();
+                }
+            }
+
+            c.close();
+
+        } else {
+            Toast.makeText(context, "No message to show!", Toast.LENGTH_SHORT).show();
+        }
+        // return the sms list
+        return allSMS;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void sendSMS(String phoneNo, String msg) {
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNo, null, msg, null, null);
+            Toast.makeText(this.context, "Message Sent",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception ex) {
+            Toast.makeText(this.context, ex.getMessage().toString(),
+                    Toast.LENGTH_LONG).show();
+            ex.printStackTrace();
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void sendSMSUsingState(int state) {
+        // using anonyme number on https://receive-smss.com/sms/33752825043/
+        String num = "+33646729562";//"+33752825043";
+        switch (state) {
+            case R.id.button_miam:
+                sendSMS(num, "Je suis en train de manger mon ange.");
+                //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_work:
+                sendSMS(num, "Je suis en train de travailler mon ange.");
+                //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_shopping:
+                sendSMS(num, "Je suis en train de faire les courses mon ange.");
+                //Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_guitar:
+                sendSMS(num, "Je suis en train de faire de la guitare mon ange.");
+                //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_workout:
+                sendSMS(num, "Je suis en train de faire du workout mon ange.");
+                //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_sleep:
+                sendSMS(num, "Je suis en train de dormir mon ange.");
+                //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }
