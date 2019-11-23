@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Option 1 the daemon will check if the text change after receiving a new sms
                 // TODO Option 2 the daemon will check if the text change is different from the last sms every minutes
                 // TODO Then it will launch the correct sms using the current_state
-                sendSMS("0672316256", "Je suis en train de manger mon ange.");
+                //sendSMS("0672316256", "Test miam");
                 //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 updateState(R.id.button_work);
                 updateButtonsColor(R.id.button_work);
                 updateTextUsingLastSms();
+                //sendSMS("0672316256", "Test work");
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de travailler mon ange.");
                 //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
@@ -154,29 +155,31 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void sendSMSUsingState(int state) {
+        // using anonyme number on https://receive-smss.com/sms/33752825043/
+        String num = "+33752825043";
         switch (state) {
             case R.id.button_miam:
-                sendSMS("0672316256", "Je suis en train de manger mon ange.");
+                sendSMS(num, "Je suis en train de manger mon ange.");
                 //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
-                sendSMS("0672316256", "Je suis en train de travailler mon ange.");
+                sendSMS(num, "Je suis en train de travailler mon ange.");
                 //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_shopping:
-                sendSMS("0672316256", "Je suis en train de faire les courses mon ange.");
+                sendSMS(num, "Je suis en train de faire les courses mon ange.");
                 //Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_guitar:
-                sendSMS("0672316256", "Je suis en train de faire de la guitare mon ange.");
+                sendSMS(num, "Je suis en train de faire de la guitare mon ange.");
                 //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
-                sendSMS("0672316256", "Je suis en train de faire du workout mon ange.");
+                sendSMS(num, "Je suis en train de faire du workout mon ange.");
                 //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_sleep:
-                sendSMS("0672316256", "Je suis en train de dormir mon ange.");
+                sendSMS(num, "Je suis en train de dormir mon ange.");
                 //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
