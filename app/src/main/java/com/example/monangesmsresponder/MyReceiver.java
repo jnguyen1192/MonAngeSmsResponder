@@ -7,8 +7,12 @@ import android.os.Build;
 import android.provider.Telephony;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+
+import java.util.List;
 
 public class MyReceiver extends BroadcastReceiver {
     private MainActivity act;
@@ -20,14 +24,19 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         assert(intent.getAction().equals(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
-        SmsMessage [] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
 
-        for(SmsMessage message : messages) {
-            String body = message.getMessageBody();
-            Log.d("Mes messages:", body);
+        // Read the last sms received
+        List<Sms> allSms = act.readAllSMS(context);
+        Sms lastSms = allSms.get(allSms.size() - 1);
+
+        // Check if it is a new sms from MonAnge
+        if (lastSms.getNumber().equals("+33646729562")) {
+            Toast.makeText(act, "Reply sms", Toast.LENGTH_SHORT).show();
+            // TODO respond using the good state from act
         }
-        Log.d("Mes messages:", "JE RECOIS QUELQUE CHOSE");
-
+        else {
+            Toast.makeText(act, "Sms received from someone else", Toast.LENGTH_SHORT).show();
+        }
     }
 }
 

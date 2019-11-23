@@ -42,16 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
         checkForSmsPermission();
 
+
+        MyReceiver receiver = new MyReceiver(this);
+        IntentFilter filter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+        registerReceiver(receiver, filter);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void updateTextUsingLastSms() {
         // TODO le texte doit être mis à jour lors de l'appui d'un bouton
-        //List<String> smsMonAnge = readSMS(context);
-
-        //final TextView textViewToChange = findViewById(R.id.my_text);
-        //textViewToChange.setText(
-        //        smsMonAnge.get(smsMonAnge.size() - 1));
         //Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
     }
 
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Option 1 the daemon will check if the text change after receiving a new sms
                 // TODO Option 2 the daemon will check if the text change is different from the last sms every minutes
                 // TODO Then it will launch the correct sms using the current_state
-                //sendSMS("0672316256", "Je suis en train de manger mon ange.");
+                sendSMS("0672316256", "Je suis en train de manger mon ange.");
                 //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_meeting:
-                //updateTextUsingLastSms();
+                updateTextUsingLastSms();
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de dormir mon ange.");
                 //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public List<String> readSMS(Context context) {
+    public List<String> readSMSFromMonAnge(Context context) {
         List<String> smsMonAnge = new ArrayList<String>();
         ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
@@ -174,12 +174,52 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
         }
-        /*
-        for (String sms : smsMonAnge) {
-            Log.d("readSMS", sms);
-        }*/
-
         return smsMonAnge;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public List<Sms> readAllSMS(Context context) {
+        List<Sms> allSMS = new ArrayList<Sms>();
+        ContentResolver cr = context.getContentResolver();
+        Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
+        int totalSMS = 0;
+        if (c != null) {
+            totalSMS = c.getCount();
+            if (c.moveToFirst()) {
+                for (int j = 0; j < totalSMS; j++) {
+                    String smsDate = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE));
+                    String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
+                    String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
+                    Date date= new Date(Long.valueOf(smsDate));
+                    @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+                    String strDate = dateFormat.format(date);
+
+                    String type;
+                    switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {
+                        case Telephony.Sms.MESSAGE_TYPE_INBOX:
+                            type = "inbox";
+                            allSMS.add(new Sms(number, strDate, body));
+                            java.util.Collections.sort(allSMS, new smsComparator());
+                            break;
+                        case Telephony.Sms.MESSAGE_TYPE_SENT:
+                            type = "sent";
+                            break;
+                        case Telephony.Sms.MESSAGE_TYPE_OUTBOX:
+                            type = "outbox";
+                            break;
+                        default:
+                            break;
+                    }
+                    c.moveToNext();
+                }
+            }
+
+            c.close();
+
+        } else {
+            Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
+        }
+        return allSMS;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
