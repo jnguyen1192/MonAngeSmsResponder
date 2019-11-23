@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
 
     private Context context;
+
+    public int state = -1;
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -88,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
     public void buttonClick(View view) {
         switch (view.getId()) {
             case R.id.button_miam:
+                // TODO update colors and variable state
+                updateState(R.id.button_miam);
+                updateButtonsColor(R.id.button_miam);
                 updateTextUsingLastSms();
                 // TODO update daemon
                 // TODO Option 1 the daemon will check if the text change after receiving a new sms
@@ -97,30 +105,45 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
+                // TODO update colors and variable state
+                updateState(R.id.button_work);
+                updateButtonsColor(R.id.button_work);
                 updateTextUsingLastSms();
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de travailler mon ange.");
                 //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_shopping:
+                // TODO update colors and variable state
+                updateState(R.id.button_shopping);
+                updateButtonsColor(R.id.button_shopping);
                 updateTextUsingLastSms();
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de faire les courses mon ange.");
                 //Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_guitar:
+                // TODO update colors and variable state
+                updateState(R.id.button_guitar);
+                updateButtonsColor(R.id.button_guitar);
                 updateTextUsingLastSms();
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de faire de la guitare mon ange.");
                 //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
+                // TODO update colors and variable state
+                updateState(R.id.button_workout);
+                updateButtonsColor(R.id.button_workout);
                 updateTextUsingLastSms();
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de faire du workout mon ange.");
                 //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.button_meeting:
+            case R.id.button_sleep:
+                // TODO update colors and variable state
+                updateState(R.id.button_sleep);
+                updateButtonsColor(R.id.button_sleep);
                 updateTextUsingLastSms();
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de dormir mon ange.");
@@ -129,53 +152,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public List<String> readSMSFromMonAnge(Context context) {
-        List<String> smsMonAnge = new ArrayList<String>();
-        ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
-        int totalSMS = 0;
-        if (c != null) {
-            totalSMS = c.getCount();
-            if (c.moveToFirst()) {
-                for (int j = 0; j < totalSMS; j++) {
-                    String smsDate = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE));
-                    String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
-                    String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
-                    Date date= new Date(Long.valueOf(smsDate));
-                    @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
-                    String strDate = dateFormat.format(date);
-
-                    String type;
-                    switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {
-                        case Telephony.Sms.MESSAGE_TYPE_INBOX:
-                            type = "inbox";
-                            if (number.equals("+33646729562")) {
-                                smsMonAnge.add(strDate + " " +body);
-                                java.util.Collections.sort(smsMonAnge);
-                                //Log.d("ReadSMS", strDate + " " +body);
-                            }
-                            break;
-                        case Telephony.Sms.MESSAGE_TYPE_SENT:
-                            type = "sent";
-                            break;
-                        case Telephony.Sms.MESSAGE_TYPE_OUTBOX:
-                            type = "outbox";
-                            break;
-                        default:
-                            break;
-                    }
-                    c.moveToNext();
-                }
-            }
-
-            c.close();
-
-        } else {
-            Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
-        }
-        return smsMonAnge;
+    public void updateState(int id) {
+        state = id;
     }
+
+    public void updateButtonsColor(int id) {
+        state = id;
+        // update all buttons color to gray
+        ViewGroup layout = (ViewGroup)findViewById(R.id.main_layout);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+
+            View child = layout.getChildAt(i);
+            if(child instanceof Button)
+            {
+                Button button = (Button) child;
+                button.setBackgroundColor(Color.GRAY);
+            }
+        }
+        // TODO update current button state color to green
+        Button button = findViewById(state);
+        button.setBackgroundColor(Color.GREEN);
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public List<Sms> readAllSMS(Context context) {

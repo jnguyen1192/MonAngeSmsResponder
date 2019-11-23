@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/main_layout">
 
     <TextView
         android:id="@+id/my_text"
@@ -34,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_meeting"
+        android:id="@+id/button_sleep"
         android:layout_width="132dp"
         android:layout_height="116dp"
         android:layout_marginStart="188dp"

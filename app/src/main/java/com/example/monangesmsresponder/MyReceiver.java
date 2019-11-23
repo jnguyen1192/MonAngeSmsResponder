@@ -30,7 +30,7 @@ public class MyReceiver extends BroadcastReceiver {
         Sms lastSms = allSms.get(allSms.size() - 1);
 
         // Check if it is a new sms from MonAnge
-        if (lastSms.getNumber().equals("+33646729562")) {
+        if (lastSms.getNumber().equals("+33646729562") && act.state != -1) {
             Toast.makeText(act, "Reply sms", Toast.LENGTH_SHORT).show();
             // TODO respond using the good state from act
         }
