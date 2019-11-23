@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     public void buttonClick(View view) {
         switch (view.getId()) {
             case R.id.button_miam:
-                // TODO update colors and variable state
+                // update colors and variable state
                 updateState(R.id.button_miam);
                 updateButtonsColor(R.id.button_miam);
                 updateTextUsingLastSms();
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
-                // TODO update colors and variable state
+                // update colors and variable state
                 updateState(R.id.button_work);
                 updateButtonsColor(R.id.button_work);
                 updateTextUsingLastSms();
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_shopping:
-                // TODO update colors and variable state
+                // update colors and variable state
                 updateState(R.id.button_shopping);
                 updateButtonsColor(R.id.button_shopping);
                 updateTextUsingLastSms();
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_guitar:
-                // TODO update colors and variable state
+                // update colors and variable state
                 updateState(R.id.button_guitar);
                 updateButtonsColor(R.id.button_guitar);
                 updateTextUsingLastSms();
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
-                // TODO update colors and variable state
+                // update colors and variable state
                 updateState(R.id.button_workout);
                 updateButtonsColor(R.id.button_workout);
                 updateTextUsingLastSms();
@@ -141,12 +141,42 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_sleep:
-                // TODO update colors and variable state
+                // update colors and variable state
                 updateState(R.id.button_sleep);
                 updateButtonsColor(R.id.button_sleep);
                 updateTextUsingLastSms();
                 // TODO update daemon
                 //sendSMS("0672316256", "Je suis en train de dormir mon ange.");
+                //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void sendSMSUsingState(int state) {
+        switch (state) {
+            case R.id.button_miam:
+                sendSMS("0672316256", "Je suis en train de manger mon ange.");
+                //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_work:
+                sendSMS("0672316256", "Je suis en train de travailler mon ange.");
+                //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_shopping:
+                sendSMS("0672316256", "Je suis en train de faire les courses mon ange.");
+                //Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_guitar:
+                sendSMS("0672316256", "Je suis en train de faire de la guitare mon ange.");
+                //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_workout:
+                sendSMS("0672316256", "Je suis en train de faire du workout mon ange.");
+                //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_sleep:
+                sendSMS("0672316256", "Je suis en train de dormir mon ange.");
                 //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }

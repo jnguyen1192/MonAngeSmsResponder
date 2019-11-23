@@ -33,6 +33,7 @@ public class MyReceiver extends BroadcastReceiver {
         if (lastSms.getNumber().equals("+33646729562") && act.state != -1) {
             Toast.makeText(act, "Reply sms", Toast.LENGTH_SHORT).show();
             // TODO respond using the good state from act
+            act.sendSMSUsingState(act.state);
         }
         else {
             Toast.makeText(act, "Sms received from someone else", Toast.LENGTH_SHORT).show();
