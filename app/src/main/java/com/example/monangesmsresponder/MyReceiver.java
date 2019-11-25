@@ -21,10 +21,12 @@ import java.util.List;
 
 public class MyReceiver extends BroadcastReceiver {
     private int state;
+    private String lastsmsfrommonange;
     private Context context;
 
-    public MyReceiver(int state) {
+    public MyReceiver(int state, String lastsmsfrommonange) {
         this.state = state;
+        this.lastsmsfrommonange = lastsmsfrommonange;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -42,7 +44,7 @@ public class MyReceiver extends BroadcastReceiver {
         // TODO uncomment num to dev
         //num = "+33672316256";
         // Check if it is a new sms from MonAnge
-        if (lastSms.getNumber().equals(num) && state != -1) {
+        if (lastSms.getNumber().equals(num) && state != -1 && !lastSms.getBody().equals(lastsmsfrommonange)) {
             Toast.makeText(context, "Reply sms", Toast.LENGTH_SHORT).show();
             // respond using the good state from act
             sendSMSUsingState(state);

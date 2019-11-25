@@ -28,8 +28,9 @@ public class NotificationService extends Service {
         // prepare data to send to the service
         int state = intent.getIntExtra("state", -1);
         String stateStr = intent.getStringExtra("state_str");
+        String lastsmsfrommonange = intent.getStringExtra("lastsmsfrommonange");
         // launch responder
-        MyReceiver receiver = new MyReceiver(state);
+        MyReceiver receiver = new MyReceiver(state, lastsmsfrommonange);
         IntentFilter filter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
         registerReceiver(receiver, filter);
         assert stateStr != null;

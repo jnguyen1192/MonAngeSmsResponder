@@ -42,13 +42,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkForSmsPermission();
-
-        // Read the last sms received
-        List<Sms> allSms = readAllSMS(this);
-        // TODO add a security before sens sms
-        //Sms lastSms = allSms.get(allSms.size() - 1);
-        //Toast.makeText(this, lastSms.getBody(), Toast.LENGTH_SHORT).show();
-        //Toast.makeText(this, allSms.get(allSms.size() - 1).getBody(), Toast.LENGTH_SHORT).show();
     }
 
     public void onRestart() {
@@ -58,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     } // onRestart()
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -65,7 +59,13 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent = new Intent(MainActivity.this, NotificationService.class);
             serviceIntent.putExtra("state", state);
             serviceIntent.putExtra("state_str", ((Button) findViewById(state)).getText());
-            //Log.d("DEBUG","---------------------------------"+mChronometer.getTimeElapsed());
+            // Read the last sms received
+            List<Sms> allSms = readAllSMSFromMonAnge(this);
+            // get body of last message from MonAnge
+            String lastSmsFromAnge = allSms.get(allSms.size() - 1).getBody();
+            // put this message on an Extra called "lastsmsfrommonange"
+            serviceIntent.putExtra("lastsmsfrommonange", lastSmsFromAnge);
+
             startService(serviceIntent);
         }
     } // onSaveInstanceState()
@@ -170,9 +170,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public List<Sms> readAllSMS(Context context) {
+    public List<Sms> readAllSMSFromMonAnge(Context context) {
         // create a sms list
-        List<Sms> allSMS = new ArrayList<>();
+        List<Sms> allSMSFromMonAnge = new ArrayList<>();
         ContentResolver cr = context.getContentResolver();
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
         int totalSMS;
@@ -191,8 +191,10 @@ public class MainActivity extends AppCompatActivity {
                     switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {
                         case Telephony.Sms.MESSAGE_TYPE_INBOX:
                             type = "inbox";
-                            allSMS.add(new Sms(number, strDate, body));
-                            java.util.Collections.sort(allSMS, new smsComparator());
+                            if(number.equals("+33646729562")) {
+                                allSMSFromMonAnge.add(new Sms(number, strDate, body));
+                                java.util.Collections.sort(allSMSFromMonAnge, new smsComparator());
+                            }
                             break;
                         case Telephony.Sms.MESSAGE_TYPE_SENT:
                             type = "sent";
@@ -214,6 +216,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // return the sms list
-        return allSMS;
+        return allSMSFromMonAnge;
     }
 }
