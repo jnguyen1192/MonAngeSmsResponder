@@ -5,16 +5,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
@@ -32,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
         checkForSmsPermission();
 
+        // Read the last sms received
+        List<Sms> allSms = readAllSMS(this);
+        // TODO add a security before sens sms
+        //Sms lastSms = allSms.get(allSms.size() - 1);
+        //Toast.makeText(this, lastSms.getBody(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, allSms.get(allSms.size() - 1).getBody(), Toast.LENGTH_SHORT).show();
     }
 
     public void onRestart() {
@@ -149,5 +166,54 @@ public class MainActivity extends AppCompatActivity {
         // TODO update current button state color to green
         Button button = findViewById(this.state);
         button.setBackgroundColor(Color.GREEN);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public List<Sms> readAllSMS(Context context) {
+        // create a sms list
+        List<Sms> allSMS = new ArrayList<>();
+        ContentResolver cr = context.getContentResolver();
+        Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
+        int totalSMS;
+        if (c != null) {
+            totalSMS = c.getCount();
+            if (c.moveToFirst()) {
+                for (int j = 0; j < totalSMS; j++) {
+                    String smsDate = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE));
+                    String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
+                    String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
+                    Date date= new Date(Long.valueOf(smsDate));
+                    @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String strDate = dateFormat.format(date);
+
+                    String type;
+                    switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {
+                        case Telephony.Sms.MESSAGE_TYPE_INBOX:
+                            type = "inbox";
+                            allSMS.add(new Sms(number, strDate, body));
+                            java.util.Collections.sort(allSMS, new smsComparator());
+                            break;
+                        case Telephony.Sms.MESSAGE_TYPE_SENT:
+                            type = "sent";
+                            break;
+                        case Telephony.Sms.MESSAGE_TYPE_OUTBOX:
+                            type = "outbox";
+                            break;
+                        default:
+                            break;
+                    }
+                    c.moveToNext();
+                }
+            }
+
+            c.close();
+
+        } else {
+            Toast.makeText(context, "No message to show!", Toast.LENGTH_SHORT).show();
+        }
+
+        // return the sms list
+        return allSMS;
     }
 }
