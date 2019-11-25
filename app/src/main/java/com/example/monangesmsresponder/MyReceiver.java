@@ -44,10 +44,12 @@ public class MyReceiver extends BroadcastReceiver {
         // TODO uncomment num to dev
         //num = "+33672316256";
         // Check if it is a new sms from MonAnge
-        if (lastSms.getNumber().equals(num) && state != -1 && !lastSms.getBody().equals(lastsmsfrommonange)) {
+        if (lastSms.getNumber().equals(num) && state != -1 && !lastSms.getBody().equals(this.lastsmsfrommonange)) {
             Toast.makeText(context, "Reply sms", Toast.LENGTH_SHORT).show();
-            // respond using the good state from act
+            // Respond using the good state from act
             sendSMSUsingState(state);
+            // Update the last sms from MonAnge
+            this.lastsmsfrommonange = lastSms.getBody();
         }
         else {
             Toast.makeText(context, "Sms received from someone else " + state, Toast.LENGTH_SHORT).show();
