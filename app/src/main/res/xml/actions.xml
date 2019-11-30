@@ -1,11 +1,10 @@
 <?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
 <actions>
     <action intentName="actions.intent.UPDATE_STATE">
-        <fulfillment urlTemplate="http://93.23.205.247/monangerespondeur.php?update{?state}">
-            <parameter-mapping>
-                intentParameter="monangeresponder.state.value"
-                urlParameter="state"
-            </parameter-mapping>
+        <fulfillment urlTemplate="http://93.23.205.247/monangeresponder/update{?state}">
+            <parameter-mapping
+                intentParameter="state.value"
+                urlParameter="state" />
         </fulfillment>
     </action>
     <!--    Example Action -->

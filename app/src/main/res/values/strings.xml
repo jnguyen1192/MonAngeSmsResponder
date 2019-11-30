@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MonAngeSmsResponder</string>
+    <string name="app_name">Mon ange</string>
     <string name="title_main_activity">Mon ange que j\'aime</string>
     <string name="guitar">Guitar</string>
     <string name="work">Work</string>
@@ -7,4 +7,6 @@
     <string name="miam">Miam</string>
     <string name="sleep">Sleep</string>
     <string name="shopping">Shopping</string>
+    <string name="once">Once</string>
+    <string name="hint">To my love</string>
 </resources>

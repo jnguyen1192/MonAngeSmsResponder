@@ -37,7 +37,11 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".NotificationService" />
+        <service android:name="com.example.monangesmsresponder.NotificationService" />
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/actions" />
     </application>
 
 </manifest>

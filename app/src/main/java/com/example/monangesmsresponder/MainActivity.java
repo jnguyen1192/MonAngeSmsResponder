@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent serviceIntent;
 
     public int state = -1;
+    public boolean once = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -143,6 +146,15 @@ public class MainActivity extends AppCompatActivity {
                 //updateTextUsingLastSms();
                 //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
                 break;
+
+            case R.id.button_once:
+                // update colors and variable once
+                updateOnce();
+                updateButtonOnceColor();
+                //updateTextUsingLastSms();
+                TextInputEditText tiet = findViewById(R.id.once_input);
+                Toast.makeText(this, "Button once Clicked with sms \n" + tiet.getText(), Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -150,8 +162,50 @@ public class MainActivity extends AppCompatActivity {
         this.state = id;
     }
 
+    public void updateOnce() {
+        if (!this.once) this.once = true;
+        else this.once = false;
+    }
+
+    public void updateDefaultButtonsColor() {
+        Button button = findViewById(R.id.button_once);
+        button.setBackgroundColor(Color.parseColor("#69F0AE"));
+        button = findViewById(R.id.button_miam);
+        button.setBackgroundColor(Color.parseColor("#8BC34A"));
+        button = findViewById(R.id.button_guitar);
+        button.setBackgroundColor(Color.parseColor("#E64A19"));
+        button = findViewById(R.id.button_work);
+        button.setBackgroundColor(Color.parseColor("#80D8FF"));
+        button = findViewById(R.id.button_workout);
+        button.setBackgroundColor(Color.parseColor("#FF4081"));
+        button = findViewById(R.id.button_shopping);
+        button.setBackgroundColor(Color.parseColor("#FFFF00"));
+        button = findViewById(R.id.button_sleep);
+        button.setBackgroundColor(Color.parseColor("#536DFE"));
+    }
+
+    public void updateButtonOnceColor() {
+        if(!once && state == -1) {
+            // set default color
+            //Toast.makeText(this, "Set default color", Toast.LENGTH_SHORT).show();
+            updateDefaultButtonsColor();
+        }
+        else if(!once && state != -1) {
+            Button button = findViewById(R.id.button_once);
+            button.setBackgroundColor(Color.GRAY);
+        }
+        else if(once && state == -1) {
+            // case no buttons state clicked and button once clicked
+            updateButtonsColor(R.id.button_once);
+        }
+        else if (once && state != 1) {
+            // case no buttons state clicked and button once clicked
+            Button button = findViewById(R.id.button_once);
+            button.setBackgroundColor(Color.GREEN);
+        }
+    }
+
     public void updateButtonsColor(int id) {
-        this.state = id;
         // update all buttons color to gray
         ViewGroup layout = findViewById(R.id.main_layout);
         for (int i = 0; i < layout.getChildCount(); i++) {
@@ -160,11 +214,16 @@ public class MainActivity extends AppCompatActivity {
             if(child instanceof Button)
             {
                 Button button = (Button) child;
-                button.setBackgroundColor(Color.GRAY);
+                if(button.getId() == R.id.button_once && once) {
+                    // nothing to do
+                }
+                else {
+                    button.setBackgroundColor(Color.GRAY);
+                }
             }
         }
-        // TODO update current button state color to green
-        Button button = findViewById(this.state);
+        // update current button state color to green
+        Button button = findViewById(id);
         button.setBackgroundColor(Color.GREEN);
     }
 
