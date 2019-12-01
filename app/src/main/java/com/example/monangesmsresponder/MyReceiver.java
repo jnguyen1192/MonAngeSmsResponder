@@ -176,7 +176,7 @@ public class MyReceiver extends BroadcastReceiver {
     }
 
     public void clean_once_variables() {
-        this.once = !this.once;
+        this.once = false;
         this.once_str = "";
         // Save preferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
