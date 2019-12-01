@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Build;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -22,11 +23,15 @@ import java.util.List;
 public class MyReceiver extends BroadcastReceiver {
     private int state;
     private String lastsmsfrommonange;
+    private boolean once;
+    private String once_str;
     private Context context;
 
-    public MyReceiver(int state, String lastsmsfrommonange) {
+    public MyReceiver(int state, String lastsmsfrommonange, boolean once, String once_str) {
         this.state = state;
         this.lastsmsfrommonange = lastsmsfrommonange;
+        this.once = once;
+        this.once_str = once_str;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -46,8 +51,18 @@ public class MyReceiver extends BroadcastReceiver {
         // Check if it is a new sms from MonAnge
         if (lastSms.getNumber().equals(num) && state != -1 && !lastSms.getBody().equals(this.lastsmsfrommonange)) {
             Toast.makeText(context, "Reply sms", Toast.LENGTH_SHORT).show();
-            // Respond using the good state from act
-            sendSMSUsingState(state);
+            // Respond using the good state from act or once
+            if(once && once_str.equals("")) {
+                // nothing to do
+                Log.d("onReceive", "nothing to do");
+                clean_once_variables();
+            }
+            else if(once && !once_str.equals("")) {
+                sendSMSUsingOnce(once_str);
+            }
+            else {
+                sendSMSUsingState(state);
+            }
             // Update the last sms from MonAnge
             this.lastsmsfrommonange = lastSms.getBody();
         }
@@ -149,6 +164,20 @@ public class MyReceiver extends BroadcastReceiver {
                 //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void sendSMSUsingOnce(String once_str) {
+        // using anonyme number on https://receive-smss.com/sms/33752825043/
+        String num = "+33646729562";//"+33752825043";
+        sendSMS(num, once_str);
+        // clean once variables
+        clean_once_variables();
+    }
+
+    public void clean_once_variables() {
+        this.once = !this.once;
+        this.once_str = "";
     }
 }
 

@@ -49,7 +49,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void onRestart() {
         super.onRestart();
-        stopService(new Intent(MainActivity.this, NotificationService.class));
+        serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+        stopService(serviceIntent);
+        // TODO get once Extra variables from service intent
+
+        // TODO update once variables
+
         Log.d("restart","ok");
     } // onRestart()
 
@@ -62,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent = new Intent(MainActivity.this, NotificationService.class);
             serviceIntent.putExtra("state", state);
             serviceIntent.putExtra("state_str", ((Button) findViewById(state)).getText());
+            serviceIntent.putExtra("once", once);
+            serviceIntent.putExtra("once_str", ((TextInputEditText) findViewById(R.id.once_input)).getText());
+            Log.d("onSaveInstanceState", String.valueOf(once));
+            Log.d("onSaveInstanceState", String.valueOf(((TextInputEditText) findViewById(R.id.once_input)).getText()));
             // Read the last sms received
             List<Sms> allSms = readAllSMSFromMonAnge(this);
             // get body of last message from MonAnge
