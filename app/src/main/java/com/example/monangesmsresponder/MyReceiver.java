@@ -27,6 +27,14 @@ public class MyReceiver extends BroadcastReceiver {
     private String once_str;
     private Context context;
 
+    public boolean isOnce() {
+        return once;
+    }
+
+    public String getOnce_str() {
+        return once_str;
+    }
+
     public MyReceiver(int state, String lastsmsfrommonange, boolean once, String once_str) {
         this.state = state;
         this.lastsmsfrommonange = lastsmsfrommonange;

@@ -9,11 +9,13 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     public int state = -1;
     public boolean once = false;
+    public String once_str = "";
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -51,10 +54,14 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         serviceIntent = new Intent(MainActivity.this, NotificationService.class);
         stopService(serviceIntent);
-        // TODO get once Extra variables from service intent
-
-        // TODO update once variables
-
+        // Load preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // Update once variables
+        once = preferences.getBoolean("once",false);
+        once_str = preferences.getString("once_str", "");
+        // Update TextInput and button once color
+        ((TextInputEditText) findViewById(R.id.once_input)).setText(once_str);
+        updateButtonOnceColor();
         Log.d("restart","ok");
     } // onRestart()
 
