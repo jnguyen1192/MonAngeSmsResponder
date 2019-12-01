@@ -5,8 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -26,14 +28,6 @@ public class MyReceiver extends BroadcastReceiver {
     private boolean once;
     private String once_str;
     private Context context;
-
-    public boolean isOnce() {
-        return once;
-    }
-
-    public String getOnce_str() {
-        return once_str;
-    }
 
     public MyReceiver(int state, String lastsmsfrommonange, boolean once, String once_str) {
         this.state = state;
@@ -186,6 +180,13 @@ public class MyReceiver extends BroadcastReceiver {
     public void clean_once_variables() {
         this.once = !this.once;
         this.once_str = "";
+        // Save preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        // Once variables
+        editor.putBoolean("once",this.once);
+        editor.putString("once_str",this.once_str);
+        editor.apply();
     }
 }
 

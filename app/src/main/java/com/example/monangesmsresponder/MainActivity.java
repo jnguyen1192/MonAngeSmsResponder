@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         // Update once variables
         once = preferences.getBoolean("once",false);
         once_str = preferences.getString("once_str", "");
+        Log.d("onRestart", String.valueOf(once));
+        Log.d("onRestart", once_str);
         // Update TextInput and button once color
         ((TextInputEditText) findViewById(R.id.once_input)).setText(once_str);
         updateButtonOnceColor();
@@ -75,15 +78,23 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent.putExtra("state", state);
             serviceIntent.putExtra("state_str", ((Button) findViewById(state)).getText());
             serviceIntent.putExtra("once", once);
-            serviceIntent.putExtra("once_str", ((TextInputEditText) findViewById(R.id.once_input)).getText());
+            serviceIntent.putExtra("once_str", (((EditText) findViewById(R.id.once_input)).getText().toString()));
             Log.d("onSaveInstanceState", String.valueOf(once));
-            Log.d("onSaveInstanceState", String.valueOf(((TextInputEditText) findViewById(R.id.once_input)).getText()));
+            Log.d("onSaveInstanceState", ((EditText) findViewById(R.id.once_input)).getText().toString());
             // Read the last sms received
             List<Sms> allSms = readAllSMSFromMonAnge(this);
             // get body of last message from MonAnge
             String lastSmsFromAnge = allSms.get(allSms.size() - 1).getBody();
             // put this message on an Extra called "lastsmsfrommonange"
             serviceIntent.putExtra("lastsmsfrommonange", lastSmsFromAnge);
+
+            // Save preferences
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = preferences.edit();
+            // Once variables
+            editor.putBoolean("once", once);
+            editor.putString("once_str", (((EditText) findViewById(R.id.once_input)).getText().toString()));
+            editor.apply();
 
             startService(serviceIntent);
         }

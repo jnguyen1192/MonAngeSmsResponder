@@ -7,11 +7,10 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Telephony;
+import android.util.Log;
 import android.widget.Toast;
 
 public class NotificationService extends Service {
-
-    private MyReceiver receiver;
 
     public NotificationService() {
     }
@@ -35,8 +34,10 @@ public class NotificationService extends Service {
         String lastsmsfrommonange = intent.getStringExtra("lastsmsfrommonange");
         boolean once = intent.getBooleanExtra("once", false);
         String once_str = intent.getStringExtra("once_str");
+        Log.d("onStartCommand", String.valueOf(once));
+        Log.d("onStartCommand", once_str);
         // launch responder
-        receiver = new MyReceiver(state, lastsmsfrommonange, once, once_str);
+        MyReceiver receiver = new MyReceiver(state, lastsmsfrommonange, once, once_str);
         IntentFilter filter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
         registerReceiver(receiver, filter);
         assert stateStr != null;
@@ -50,14 +51,6 @@ public class NotificationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        // Load preferences
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        // Update once variables
-        editor.putBoolean("once",receiver.isOnce());
-        editor.putString("once_str",receiver.getOnce_str());
-        editor.apply();
 
         Toast.makeText(getApplicationContext(),
                 "MonAngeResponder service stopped ",
