@@ -28,6 +28,9 @@ public class MyReceiver extends BroadcastReceiver {
     private boolean once;
     private String once_str;
     private Context context;
+    // using anonyme number on https://receive-smss.com/sms/33752825043/
+    private String num_send = "+33646729562";//"+33752825043";
+    private String num_receiv = "+33646729562";
 
     public MyReceiver(int state, String lastsmsfrommonange, boolean once, String once_str) {
         this.state = state;
@@ -47,11 +50,10 @@ public class MyReceiver extends BroadcastReceiver {
         List<Sms> allSms = readAllSMS(context);
         Sms lastSms = allSms.get(allSms.size() - 1);
 
-        String num = "+33646729562";
-        // TODO uncomment num to dev
-        //num = "+33672316256";
+        // TODO uncomment num_send to dev
+        //num_receiv = "+33672316256";
         // Check if it is a new sms from MonAnge
-        if (lastSms.getNumber().equals(num) && state != -1 && !lastSms.getBody().equals(this.lastsmsfrommonange)) {
+        if (lastSms.getNumber().equals(num_receiv) && state != -1 && !lastSms.getBody().equals(this.lastsmsfrommonange)) {
             Toast.makeText(context, "Reply sms", Toast.LENGTH_SHORT).show();
             // Respond using the good state from act or once
             if(once && once_str.equals("")) {
@@ -138,31 +140,29 @@ public class MyReceiver extends BroadcastReceiver {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void sendSMSUsingState(int state) {
-        // using anonyme number on https://receive-smss.com/sms/33752825043/
-        String num = "+33646729562";//"+33752825043";
         switch (state) {
             case R.id.button_miam:
-                sendSMS(num, "Je suis en train de manger mon ange.");
+                sendSMS(num_send, "Je suis en train de manger mon ange.");
                 //Toast.makeText(this, "Button miam Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_work:
-                sendSMS(num, "Je suis en train de travailler mon ange.");
+                sendSMS(num_send, "Je suis en train de travailler mon ange.");
                 //Toast.makeText(this, "Button work Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_shopping:
-                sendSMS(num, "Je suis en train de faire les courses mon ange.");
+                sendSMS(num_send, "Je suis en train de faire les courses mon ange.");
                 //Toast.makeText(this, "Button shopping Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_guitar:
-                sendSMS(num, "Je suis en train de faire de la guitare mon ange.");
+                sendSMS(num_send, "Je suis en train de faire de la guitare mon ange.");
                 //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
-                sendSMS(num, "Je suis en train de faire du workout mon ange.");
+                sendSMS(num_send, "Je suis en train de faire du workout mon ange.");
                 //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_sleep:
-                sendSMS(num, "Je suis en train de dormir mon ange.");
+                sendSMS(num_send, "Je suis en train de dormir mon ange.");
                 //Toast.makeText(this, "Button sleep Clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -170,9 +170,7 @@ public class MyReceiver extends BroadcastReceiver {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void sendSMSUsingOnce(String once_str) {
-        // using anonyme number on https://receive-smss.com/sms/33752825043/
-        String num = "+33646729562";//"+33752825043";
-        sendSMS(num, once_str);
+        sendSMS(num_send, once_str);
         // clean once variables
         clean_once_variables();
     }
