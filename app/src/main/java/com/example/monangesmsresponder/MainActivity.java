@@ -23,8 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.monangesmsresponder.tools.Tools;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DateFormat;
@@ -41,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
     public int state = -1;
     public boolean once = false;
     public String once_str = "";
+    public boolean routine = true;
+
+    public Tools tools = new Tools();
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -59,10 +64,23 @@ public class MainActivity extends AppCompatActivity {
             if (state != -1) {
                 updateButtonsColor(state);
             }
+            routine = preferences.getBoolean("routine", true);
             //Toast.makeText(this, "Service is running with state:" + String.valueOf(state), Toast.LENGTH_SHORT).show();
         }
+        // TODO update the switch routine
+        ((Switch) findViewById(R.id.switch_routine)).setChecked(routine);
         checkForSmsPermission();
     }
+    /* TODO remove the service if apps closed
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(isMyServiceRunning(NotificationService.class)) {
+
+        }
+
+    }*/
 
     public void onRestart() {
         super.onRestart();
@@ -73,11 +91,20 @@ public class MainActivity extends AppCompatActivity {
         // Update once variables
         once = preferences.getBoolean("once",false);
         once_str = preferences.getString("once_str", "");
-        //Log.d("onRestart", String.valueOf(once));
-        //Log.d("onRestart", once_str);
         // Update TextInput and button once color
         ((TextInputEditText) findViewById(R.id.once_input)).setText(once_str);
         updateButtonOnceColor();
+
+        // TODO Update state because routine
+        if(routine) {
+            state = (Integer) (tools.getStateUsingRoutine().get(0));
+        }
+        //state = preferences.getInt("state",-1);
+        if(state != -1) {
+            updateButtonsColor(state);
+        }
+        // TODO update the switch routine or not
+        ((Switch) findViewById(R.id.switch_routine)).setChecked(routine);
         Log.d("restart","ok");
     } // onRestart()
 
@@ -86,14 +113,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        if (state != -1) {
+        routine = ((Switch) findViewById(R.id.switch_routine)).isChecked();
+        if (state != -1 || routine) {
             serviceIntent = new Intent(MainActivity.this, NotificationService.class);
-            serviceIntent.putExtra("state", state);
-            serviceIntent.putExtra("state_str", ((Button) findViewById(state)).getText());
+            if(routine) {
+                state = (Integer) (tools.getStateUsingRoutine().get(0));
+                //Log.d("Test", (String) ((Button) findViewById(state)).getText());
+            }
+            if(state != -1) {
+                serviceIntent.putExtra("state", state);
+                serviceIntent.putExtra("state_str", ((Button) findViewById(state)).getText());
+            }
             serviceIntent.putExtra("once", once);
             serviceIntent.putExtra("once_str", (((EditText) findViewById(R.id.once_input)).getText().toString()));
-            Log.d("onSaveInstanceState", String.valueOf(once));
-            Log.d("onSaveInstanceState", ((EditText) findViewById(R.id.once_input)).getText().toString());
+            serviceIntent.putExtra("routine", routine);
+
+            //Log.d("onSaveInstanceState", String.valueOf(once));
+            //Log.d("onSaveInstanceState", ((EditText) findViewById(R.id.once_input)).getText().toString());
             // Read the last sms received
             List<Sms> allSms = readAllSMSFromMonAnge(this);
             // get body of last message from MonAnge

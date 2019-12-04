@@ -59,8 +59,9 @@ public class BootUpReceiver extends BroadcastReceiver {
             // Save preferences
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = preferences.edit();
-            // Once variables
+            // Variables to save
             editor.putInt("state", state);
+            editor.putBoolean("routine", true);
             editor.apply();
 
             context.startService(serviceIntent);

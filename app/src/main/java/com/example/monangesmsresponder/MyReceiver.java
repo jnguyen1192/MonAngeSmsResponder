@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.monangesmsresponder.tools.Tools;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,16 +29,21 @@ public class MyReceiver extends BroadcastReceiver {
     private String lastsmsfrommonange;
     private boolean once;
     private String once_str;
+    private boolean routine;
+    private Tools tools;
+
     private Context context;
     // using anonyme number on https://receive-smss.com/sms/33752825043/
     private String num_send = "+33646729562";//"+33752825043";
     private String num_receiv = "+33646729562";
 
-    public MyReceiver(int state, String lastsmsfrommonange, boolean once, String once_str) {
+    public MyReceiver(int state, String lastsmsfrommonange, boolean once, String once_str, boolean routine) {
         this.state = state;
         this.lastsmsfrommonange = lastsmsfrommonange;
         this.once = once;
         this.once_str = once_str;
+        this.routine = routine;
+        this.tools = new Tools();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -63,12 +70,19 @@ public class MyReceiver extends BroadcastReceiver {
             }
             else if(once && !once_str.equals("")) {
                 sendSMSUsingOnce(once_str);
+                clean_once_variables();
             }
             else {
+                // TODO add the test for the switch routine
+                if(routine) {
+                    // TODO Update the preferences
+                    update_state_preferences();
+                }
                 sendSMSUsingState(state);
             }
             // Update the last sms from MonAnge
             this.lastsmsfrommonange = lastSms.getBody();
+
         }
         else {
             Toast.makeText(context, "Sms received from someone else " + state, Toast.LENGTH_SHORT).show();
@@ -158,7 +172,7 @@ public class MyReceiver extends BroadcastReceiver {
                 //Toast.makeText(this, "Button guitar Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_workout:
-                sendSMS(num_send, "Je suis en train de faire du workout mon ange.");
+                sendSMS(num_send, "Je suis en train de faire du sport mon ange.");
                 //Toast.makeText(this, "Button workout Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.button_sleep:
@@ -185,6 +199,10 @@ public class MyReceiver extends BroadcastReceiver {
         editor.putBoolean("once",this.once);
         editor.putString("once_str",this.once_str);
         editor.apply();
+    }
+
+    public void update_state_preferences() {
+        state = (Integer) (this.tools.getStateUsingRoutine().get(0));
     }
 }
 

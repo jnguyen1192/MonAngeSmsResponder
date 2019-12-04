@@ -3,9 +3,7 @@ package com.example.monangesmsresponder;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.util.Log;
 import android.widget.Toast;
@@ -35,16 +33,24 @@ public class NotificationService extends Service {
         boolean once = intent.getBooleanExtra("once", false);
         String once_str = "";
         once_str = intent.getStringExtra("once_str");
+        boolean routine = intent.getBooleanExtra("routine", true);
         //Log.d("onStartCommand", String.valueOf(once));
         //Log.d("onStartCommand", once_str);
         // launch responder
-        MyReceiver receiver = new MyReceiver(state, lastsmsfrommonange, once, once_str);
+        MyReceiver receiver = new MyReceiver(state, lastsmsfrommonange, once, once_str, routine);
         IntentFilter filter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
         registerReceiver(receiver, filter);
         assert stateStr != null;
-        Toast.makeText(this,
-                "Mon Ange launched with button " + stateStr.toLowerCase(),
-                Toast.LENGTH_LONG).show();
+        if(!routine) {
+            Toast.makeText(this,
+                    "Mon Ange launched with button " + stateStr.toLowerCase() ,
+                    Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(this,
+                    "Mon Ange launched with routine",
+                    Toast.LENGTH_LONG).show();
+        }
 
         return START_NOT_STICKY;
     }

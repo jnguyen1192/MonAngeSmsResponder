@@ -70,7 +70,6 @@ public class Tools {
         //Log.d("Test", String.valueOf(state));
         //Log.d("Test", state_str);
         //Log.d("Test", "Other");
-
         return Arrays.asList(state, state_str);
     }
 }
