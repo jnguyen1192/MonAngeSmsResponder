@@ -50,7 +50,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         if(isMyServiceRunning(NotificationService.class)) {
             // stop the service
-            stopService(new Intent(this, NotificationService.class));
+            serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+            stopService(serviceIntent);
+            // Load preferences
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            // Update once variables
+            state = preferences.getInt("state", -1);
+            if (state != -1) {
+                updateButtonsColor(state);
+            }
+            //Toast.makeText(this, "Service is running with state:" + String.valueOf(state), Toast.LENGTH_SHORT).show();
         }
         checkForSmsPermission();
     }
@@ -64,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
         // Update once variables
         once = preferences.getBoolean("once",false);
         once_str = preferences.getString("once_str", "");
-        Log.d("onRestart", String.valueOf(once));
-        Log.d("onRestart", once_str);
+        //Log.d("onRestart", String.valueOf(once));
+        //Log.d("onRestart", once_str);
         // Update TextInput and button once color
         ((TextInputEditText) findViewById(R.id.once_input)).setText(once_str);
         updateButtonOnceColor();

@@ -6,15 +6,15 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.Telephony;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 
 import com.example.monangesmsresponder.tools.Tools;
 
@@ -56,8 +56,17 @@ public class BootUpReceiver extends BroadcastReceiver {
             // put this message on an Extra called "lastsmsfrommonange"
             serviceIntent.putExtra("lastsmsfrommonange", lastSmsFromAnge);
 
+            // Save preferences
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = preferences.edit();
+            // Once variables
+            editor.putInt("state", state);
+            editor.apply();
+
             context.startService(serviceIntent);
+
         }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

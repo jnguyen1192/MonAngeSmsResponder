@@ -33,16 +33,17 @@ public class NotificationService extends Service {
         String stateStr = intent.getStringExtra("state_str");
         String lastsmsfrommonange = intent.getStringExtra("lastsmsfrommonange");
         boolean once = intent.getBooleanExtra("once", false);
-        String once_str = intent.getStringExtra("once_str");
-        Log.d("onStartCommand", String.valueOf(once));
-        Log.d("onStartCommand", once_str);
+        String once_str = "";
+        once_str = intent.getStringExtra("once_str");
+        //Log.d("onStartCommand", String.valueOf(once));
+        //Log.d("onStartCommand", once_str);
         // launch responder
         MyReceiver receiver = new MyReceiver(state, lastsmsfrommonange, once, once_str);
         IntentFilter filter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
         registerReceiver(receiver, filter);
         assert stateStr != null;
         Toast.makeText(this,
-                "MonAngeResponder service launched with button " + stateStr.toLowerCase(),
+                "Mon Ange launched with button " + stateStr.toLowerCase(),
                 Toast.LENGTH_LONG).show();
 
         return START_NOT_STICKY;
@@ -53,7 +54,7 @@ public class NotificationService extends Service {
         super.onDestroy();
 
         Toast.makeText(getApplicationContext(),
-                "MonAngeResponder service stopped ",
+                "Mon Ange stopped ",
                 Toast.LENGTH_LONG).show();
     }
 }
