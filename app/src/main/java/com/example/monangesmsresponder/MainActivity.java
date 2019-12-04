@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
             if(child instanceof Button)
             {
                 Button button = (Button) child;
-                if(button.getId() == R.id.button_once && once) {
+                if((button.getId() == R.id.button_once && once) || button.getId() == R.id.switch_routine) {
                     // nothing to do
                 }
                 else {
