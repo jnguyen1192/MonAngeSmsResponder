@@ -1,7 +1,5 @@
 package com.example.monangesmsresponder;
 
-import java.util.Comparator;
-
 public class Sms {
     private String number;
     private String date;

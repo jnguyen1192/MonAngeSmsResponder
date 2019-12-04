@@ -10,16 +10,19 @@ import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     public int state = -1;
     public boolean once = false;
+    public String once_str = "";
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -53,7 +57,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void onRestart() {
         super.onRestart();
-        stopService(new Intent(MainActivity.this, NotificationService.class));
+        serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+        stopService(serviceIntent);
+        // Load preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // Update once variables
+        once = preferences.getBoolean("once",false);
+        once_str = preferences.getString("once_str", "");
+        Log.d("onRestart", String.valueOf(once));
+        Log.d("onRestart", once_str);
+        // Update TextInput and button once color
+        ((TextInputEditText) findViewById(R.id.once_input)).setText(once_str);
+        updateButtonOnceColor();
         Log.d("restart","ok");
     } // onRestart()
 
@@ -66,12 +81,24 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent = new Intent(MainActivity.this, NotificationService.class);
             serviceIntent.putExtra("state", state);
             serviceIntent.putExtra("state_str", ((Button) findViewById(state)).getText());
+            serviceIntent.putExtra("once", once);
+            serviceIntent.putExtra("once_str", (((EditText) findViewById(R.id.once_input)).getText().toString()));
+            Log.d("onSaveInstanceState", String.valueOf(once));
+            Log.d("onSaveInstanceState", ((EditText) findViewById(R.id.once_input)).getText().toString());
             // Read the last sms received
             List<Sms> allSms = readAllSMSFromMonAnge(this);
             // get body of last message from MonAnge
             String lastSmsFromAnge = allSms.get(allSms.size() - 1).getBody();
             // put this message on an Extra called "lastsmsfrommonange"
             serviceIntent.putExtra("lastsmsfrommonange", lastSmsFromAnge);
+
+            // Save preferences
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = preferences.edit();
+            // Once variables
+            editor.putBoolean("once", once);
+            editor.putString("once_str", (((EditText) findViewById(R.id.once_input)).getText().toString()));
+            editor.apply();
 
             startService(serviceIntent);
         }

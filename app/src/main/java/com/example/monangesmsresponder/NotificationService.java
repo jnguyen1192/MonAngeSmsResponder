@@ -3,8 +3,11 @@ package com.example.monangesmsresponder;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.Telephony;
+import android.util.Log;
 import android.widget.Toast;
 
 public class NotificationService extends Service {
@@ -29,8 +32,12 @@ public class NotificationService extends Service {
         int state = intent.getIntExtra("state", -1);
         String stateStr = intent.getStringExtra("state_str");
         String lastsmsfrommonange = intent.getStringExtra("lastsmsfrommonange");
+        boolean once = intent.getBooleanExtra("once", false);
+        String once_str = intent.getStringExtra("once_str");
+        Log.d("onStartCommand", String.valueOf(once));
+        Log.d("onStartCommand", once_str);
         // launch responder
-        MyReceiver receiver = new MyReceiver(state, lastsmsfrommonange);
+        MyReceiver receiver = new MyReceiver(state, lastsmsfrommonange, once, once_str);
         IntentFilter filter = new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
         registerReceiver(receiver, filter);
         assert stateStr != null;
@@ -44,6 +51,7 @@ public class NotificationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         Toast.makeText(getApplicationContext(),
                 "MonAngeResponder service stopped ",
                 Toast.LENGTH_LONG).show();
