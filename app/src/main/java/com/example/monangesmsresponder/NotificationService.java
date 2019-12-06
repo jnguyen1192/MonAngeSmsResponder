@@ -10,10 +10,10 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Telephony;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import com.example.monangesmsresponder.tools.Tools;
 
@@ -66,11 +66,11 @@ public class NotificationService extends Service {
         }
         if(state_str != null) {
             mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            showNotification(state_str, once_str, routine);
+            showNotification(state_str, once, once_str, routine);
 
             if(routine) {
                 // TODO launch a thread that update the state every time it needs respecting the timers
-                launchThreadUpdateNotificationUsingTimers(once_str, routine);
+                launchThreadUpdateNotificationUsingTimers(once, once_str, routine);
             }
         }
         return START_NOT_STICKY;
@@ -92,12 +92,17 @@ public class NotificationService extends Service {
      * Show a notification while this service is running.
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void showNotification(String state_str, String once_str, boolean routine) {
+    private void showNotification(String state_str, boolean once, String once_str, boolean routine) {
         // In this sample, we'll use the same text for the ticker and the expanded notification
         CharSequence text = "";
+        CharSequence bigText = "";
         if(routine) {
             text = "Routine";
         }
+        if(once) {
+            bigText = once_str;
+        }
+
         // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 new Intent(this, MainActivity.class).setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0);
@@ -110,13 +115,15 @@ public class NotificationService extends Service {
                 .setContentTitle(state_str)  // the label of the entry
                 .setContentText(text)  // the contents of the entry
                 .setContentIntent(contentIntent)  // The intent to send when the entry is clicke
+                .setStyle(new Notification.BigTextStyle()
+                        .bigText(bigText))
                 .build();
         notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
         // Send the notification.
         mNM.notify(R.string.app_name, notification);
     } // showNotification()
 
-    public void launchThreadUpdateNotificationUsingTimers(final String once_str, final boolean routine) {
+    public void launchThreadUpdateNotificationUsingTimers(final  boolean once, final String once_str, final boolean routine) {
         mThread = new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             public void run() {
@@ -128,8 +135,7 @@ public class NotificationService extends Service {
                     SystemClock.sleep(timeToSleep * 60000);
                     // TODO update notification
                     String state_str = (String) (tools.getStateUsingRoutine().get(1));
-                    showNotification(state_str, once_str, routine);
-
+                    showNotification(state_str, once, once_str, routine);
                 }
             }
         });
