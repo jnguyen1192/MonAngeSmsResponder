@@ -8,15 +8,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.provider.Telephony;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.monangesmsresponder.tools.Tools;
+
 public class NotificationService extends Service {
 
     private NotificationManager mNM;
+    private Thread mThread;
 
     public NotificationService() {
     }
@@ -64,6 +68,10 @@ public class NotificationService extends Service {
             mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             showNotification(state_str, once_str, routine);
 
+            if(routine) {
+                // TODO launch a thread that update the state every time it needs respecting the timers
+                launchThreadUpdateNotificationUsingTimers(once_str, routine);
+            }
         }
         return START_NOT_STICKY;
     }
@@ -71,7 +79,10 @@ public class NotificationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // Stop notification bar
         mNM.cancel(R.string.app_name);
+        // Stop thread updating the notification bar
+        mThread.interrupt();
         Toast.makeText(getApplicationContext(),
                 "Mon Ange stopped ",
                 Toast.LENGTH_LONG).show();
@@ -104,4 +115,24 @@ public class NotificationService extends Service {
         // Send the notification.
         mNM.notify(R.string.app_name, notification);
     } // showNotification()
+
+    public void launchThreadUpdateNotificationUsingTimers(final String once_str, final boolean routine) {
+        mThread = new Thread(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            public void run() {
+                Tools tools = new Tools();
+                // Get the time to sleep
+                int timeToSleep;
+                while (true) {
+                    timeToSleep = tools.getNextTimerToSleep();
+                    SystemClock.sleep(timeToSleep * 60000);
+                    // TODO update notification
+                    String state_str = (String) (tools.getStateUsingRoutine().get(1));
+                    showNotification(state_str, once_str, routine);
+
+                }
+            }
+        });
+        mThread.start();
+    }
 }

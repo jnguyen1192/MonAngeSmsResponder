@@ -1,5 +1,7 @@
 package com.example.monangesmsresponder;
 
+import com.example.monangesmsresponder.tools.Tools;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -12,6 +14,14 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
+        assertEquals(4, 2 + 2);
+    }
+    @Test
+    public void getNextTimerToSleep_isCorrect() {
+
+        Tools t = new Tools();
+        int sleep_time = t.getNextTimerToSleep();
+        System.out.println("Sleep time " + sleep_time + " minutes");
         assertEquals(4, 2 + 2);
     }
 }

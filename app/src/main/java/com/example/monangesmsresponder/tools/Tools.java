@@ -8,12 +8,29 @@ import com.example.monangesmsresponder.R;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class Tools {
+    public List<String> mTimers = Arrays.asList("0,sleep", "500,work", "600,miam", "730,guitar", "800,workout", "1030,shopping", "1130,miam", "1330,guitar", "1400,workout", "1600,miam", "1630,work", "1800,miam", "1930,guitar", "2000,sleep");
+
+    public Integer getNextTimerToSleep() {
+        int datetime_int = currentDateTime();
+        int int_timer;
+        for(String timer : mTimers) {
+            String[] values = timer.split(",");
+            ArrayList<String> timer_split = new ArrayList<String>(Arrays.asList(values));
+            int_timer = Integer.parseInt(timer_split.get(0));
+            if(int_timer > datetime_int) {
+                //System.out.println(timer_split.get(1));
+                return int_timer - datetime_int;
+            }
+        }
+        return 0;
+    }
 
     public Integer currentDateTime() {
         Calendar c = Calendar.getInstance();
