@@ -53,34 +53,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(isMyServiceRunning(NotificationService.class)) {
-            // stop the service
-            serviceIntent = new Intent(MainActivity.this, NotificationService.class);
-            stopService(serviceIntent);
-            // Load preferences
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            // Update once variables
-            state = preferences.getInt("state", -1);
-            if (state != -1) {
-                updateButtonsColor(state);
-            }
-            routine = preferences.getBoolean("routine", true);
-            //Toast.makeText(this, "Service is running with state:" + String.valueOf(state), Toast.LENGTH_SHORT).show();
-        }
+
+        closeServiceNotification();
         // TODO update the switch routine
         ((Switch) findViewById(R.id.switch_routine)).setChecked(routine);
         checkForSmsPermission();
     }
-    /* TODO remove the service if apps closed
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if(isMyServiceRunning(NotificationService.class)) {
-
-        }
-
-    }*/
 
     public void onRestart() {
         super.onRestart();
@@ -148,6 +126,31 @@ public class MainActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
     } // onSaveInstanceState()
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // remove the service if apps closed
+        closeServiceNotification();
+    }
+
+    private void closeServiceNotification() {
+
+        if(isMyServiceRunning(NotificationService.class)) {
+            // stop the service
+            serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+            stopService(serviceIntent);
+            // Load preferences
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            // Update once variables
+            state = preferences.getInt("state", -1);
+            if (state != -1) {
+                updateButtonsColor(state);
+            }
+            routine = preferences.getBoolean("routine", true);
+            //Toast.makeText(this, "Service is running with state:" + String.valueOf(state), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void updateTextUsingLastSms() {
