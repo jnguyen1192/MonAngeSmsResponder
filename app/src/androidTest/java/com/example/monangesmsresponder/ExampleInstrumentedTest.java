@@ -39,4 +39,10 @@ public class ExampleInstrumentedTest {
         String state_str = (String) state_statestr.get(1);
         Log.d("Test", String.valueOf(state) + " " + state_str);
     }
+
+    @Test
+    public void testCode() {
+        System.out.println(Integer.valueOf("0010"));
+        Log.d("Test123","Hello");
+    }
 }

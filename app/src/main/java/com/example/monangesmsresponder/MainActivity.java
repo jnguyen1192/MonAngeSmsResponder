@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent = new Intent(MainActivity.this, NotificationService.class);
             if(routine) {
                 state = (Integer) (tools.getStateUsingRoutine().get(0));
+                serviceIntent.putExtra("state", state);
+                serviceIntent.putExtra("state_str", ((Button) findViewById(state)).getText());
                 //Log.d("Test", (String) ((Button) findViewById(state)).getText());
             }
             if(state != -1) {

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Telephony;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -20,7 +21,7 @@ import com.example.monangesmsresponder.tools.Tools;
 public class NotificationService extends Service {
 
     private NotificationManager mNM;
-    private Thread mThread;
+    private Thread mThread = null;
 
     public NotificationService() {
     }
@@ -82,7 +83,9 @@ public class NotificationService extends Service {
         // Stop notification bar
         mNM.cancel(R.string.app_name);
         // Stop thread updating the notification bar
-        mThread.interrupt();
+        if(mThread != null) {
+            mThread.interrupt();
+        }
         Toast.makeText(getApplicationContext(),
                 "Mon Ange stopped ",
                 Toast.LENGTH_LONG).show();
@@ -132,10 +135,13 @@ public class NotificationService extends Service {
                 int timeToSleep;
                 while (true) {
                     timeToSleep = tools.getNextTimerToSleep();
+                    //Log.d("launch_test", "Sleep " + timeToSleep);
                     SystemClock.sleep(timeToSleep * 60000);
                     // TODO update notification
                     String state_str = (String) (tools.getStateUsingRoutine().get(1));
+                    //Log.d("launch_test", state_str + " " + once + " " + once_str + " " + routine);
                     showNotification(state_str, once, once_str, routine);
+                    //Log.d("launch_test", "Sleep ended 3");
                 }
             }
         });

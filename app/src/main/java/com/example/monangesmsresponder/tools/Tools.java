@@ -13,23 +13,34 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Tools {
     public List<String> mTimers = Arrays.asList("0,sleep", "500,work", "600,miam", "730,guitar", "800,workout", "1030,shopping", "1130,miam", "1330,guitar", "1400,workout", "1600,miam", "1630,work", "1800,miam", "1930,guitar", "2000,sleep");
 
     public Integer getNextTimerToSleep() {
-        int datetime_int = currentDateTime();
+        int datetime_int = currentDateTime(); // as hhmm
         int int_timer;
         for(String timer : mTimers) {
             String[] values = timer.split(",");
             ArrayList<String> timer_split = new ArrayList<String>(Arrays.asList(values));
             int_timer = Integer.parseInt(timer_split.get(0));
             if(int_timer > datetime_int) {
-                //System.out.println(timer_split.get(1));
-                return int_timer - datetime_int;
+                // TODO need to correct the time to wait
+                String str_timer = String.format("%04d" , int_timer);
+                int hh_t = Character.getNumericValue(str_timer.charAt(0))*10 + Character.getNumericValue(str_timer.charAt(1));
+                int mm_t = Character.getNumericValue(str_timer.charAt(2))*10 + Character.getNumericValue(str_timer.charAt(3));
+                int int_timer_mm = hh_t * 60 + mm_t;
+
+                String str_datetime = String.format("%04d" , datetime_int);
+                int hh_d = Character.getNumericValue(str_datetime.charAt(0))*10 + Character.getNumericValue(str_datetime.charAt(1));
+                int mm_d = Character.getNumericValue(str_datetime.charAt(2))*10 + Character.getNumericValue(str_datetime.charAt(3));
+                int int_datetime_mm = hh_d * 60 + mm_d;
+
+                return int_timer_mm - int_datetime_mm;
             }
         }
-        return 0;
+        return 24*60 - datetime_int;
     }
 
     public Integer currentDateTime() {
