@@ -20,7 +20,7 @@ public class Tools {
 
     public Integer getNextTimerToSleep() {
         int datetime_int = currentDateTime(); // as hhmm
-        int int_timer;
+        int int_timer, int_datetime_mm = 0;
         for(String timer : mTimers) {
             String[] values = timer.split(",");
             ArrayList<String> timer_split = new ArrayList<String>(Arrays.asList(values));
@@ -35,12 +35,12 @@ public class Tools {
                 String str_datetime = String.format("%04d" , datetime_int);
                 int hh_d = Character.getNumericValue(str_datetime.charAt(0))*10 + Character.getNumericValue(str_datetime.charAt(1));
                 int mm_d = Character.getNumericValue(str_datetime.charAt(2))*10 + Character.getNumericValue(str_datetime.charAt(3));
-                int int_datetime_mm = hh_d * 60 + mm_d;
+                int_datetime_mm = hh_d * 60 + mm_d;
 
                 return int_timer_mm - int_datetime_mm;
             }
         }
-        return 24*60 - datetime_int;
+        return 24*60 - int_datetime_mm;
     }
 
     public Integer currentDateTime() {
